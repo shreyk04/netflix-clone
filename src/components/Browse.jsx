@@ -1,8 +1,18 @@
 import React from 'react'
+import Header from './Header'
+import useNowPlayingMovies from '../hooks/useNowPlayingMovies'
+import MainContainer from './MainContainer';
 
 function Browse() {
+  
+  useNowPlayingMovies();
+ 
+  
   return (
-    <div>Browse</div>
+    <div>
+      <Header/>
+      <MainContainer/>
+    </div>
   )
 }
 
