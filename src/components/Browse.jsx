@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import Header from "./Header";
 import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
@@ -32,6 +33,24 @@ function Browse() {
       {/* <Main/> */}
     </div>
   );
+=======
+import React from 'react'
+import Header from './Header'
+import useNowPlayingMovies from '../hooks/useNowPlayingMovies'
+import MainContainer from './MainContainer';
+
+function Browse() {
+  
+  useNowPlayingMovies();
+ 
+  
+  return (
+    <div>
+      <Header/>
+      <MainContainer/>
+    </div>
+  )
+>>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
 }
 
 export default Browse;

@@ -1,11 +1,16 @@
 import React, { useEffect } from "react";
+<<<<<<< HEAD
 import { NavLink, useNavigate } from "react-router-dom";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
 import { auth } from "../utils/firebase";
 import { signOut } from "firebase/auth";
 import { useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../utils/userSlice";
 import { useDispatch } from "react-redux";
+<<<<<<< HEAD
 import { LOGO, SUPPORTED_LANGUAGES, USER_AVTAR } from "../utils/constants";
 import { toggleGptSearchView } from "../utils/gptSlice";
 import Select from "@mui/material/Select";
@@ -21,11 +26,25 @@ function Header() {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {})
+=======
+import { LOGO, USER_AVTAR } from "../utils/constants";
+function Header() {
+  const navigate = useNavigate();
+  
+  const dispatch = useDispatch();
+  const user = useSelector((store) => store.user);
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+
+      })
+>>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
       .catch((error) => {
         // An error happened.
         navigate("/error");
       });
   };
+<<<<<<< HEAD
 
 
   const handleLanguageChange = (e) => {
@@ -35,10 +54,16 @@ function Header() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+=======
+  useEffect(() => {
+
+    const unsubscribe= onAuthStateChanged(auth, (user) => {
+>>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/auth.user
 
+<<<<<<< HEAD
         const { uid, email, displayName, photoURL } = user;
         // const uid = user.uid;
         dispatch(
@@ -51,11 +76,19 @@ function Header() {
         );
         // ...
         navigate("/browse");
+=======
+        const { uid, email, displayName,photoURL } = user;
+        // const uid = user.uid;
+        dispatch(addUser({ uid: uid, email: email, displayName: displayName,photoURL:photoURL }));
+        // ...
+        navigate('/browse')
+>>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
       } else {
         // User is signed out
         // ...
 
         dispatch(removeUser());
+<<<<<<< HEAD
         navigate("/");
       }
     });
@@ -124,6 +157,32 @@ function Header() {
           </div>
         )}
       </div>
+=======
+        navigate('/')
+
+      }
+    });
+    return ()=>unsubscribe();
+  }, []);
+
+  return (
+    <div className="absolute z-10 w-screen bg-gradient-to-b from-black p-2  flex justify-between">
+      <img
+        className="w-44 m-2"
+        src={LOGO}
+        alt=""
+      />
+      {user && (
+        <div className="cursor-pointer grid place-content-center grid-cols-2">
+          <img
+            className="w-10 h-10"
+            src={USER_AVTAR}
+            alt=""
+          />
+          <button onClick={handleSignOut} className="text-whites">Sign Out</button>
+        </div>
+      )}
+>>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
     </div>
   );
 }

@@ -9,7 +9,11 @@ const mainMovie=movies[0]
 
 const {title,overview}=mainMovie;
   return (
+<<<<<<< HEAD
     <div className='w-full '>
+=======
+    <div className=''>
+>>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
         <VideoTitle title={title} overview={overview}/>
         <VideoBackground movieId={mainMovie.id}/>
 
