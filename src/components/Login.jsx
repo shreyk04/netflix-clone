@@ -1,47 +1,153 @@
-import React, { useState } from 'react'
-import Header from './Header'
+import React, { useRef, useState } from "react";
+import Header from "./Header";
+import { useNavigate } from 'react-router-dom';
 
+import {  createUserWithEmailAndPassword ,signInWithEmailAndPassword} from "firebase/auth";
+import {auth} from "../utils/firebase";
+
+import {checkValidData} from "../utils/validate";
+import {  updateProfile } from "firebase/auth";
+import { BG_URL, USER_AVTAR } from "../utils/constants";
+import { addUser } from "../utils/userSlice";
+import {useDispatch} from 'react-redux'
 function Login() {
+  const [isSignIn, setIsSignIn] = useState(false);
+  const dispatch=useDispatch();
+  const[errorMessage,setErrorMessage]=useState();
+
+  const navigate=useNavigate();
+  const toggleSignInForm = () => {
+    setIsSignIn(!isSignIn);
+  };
+  
+  const email = useRef(null);
+  const password = useRef(null);
+  const name = useRef(null);
+
+ const handleButtonClick=()=>{
+  let userEmail=email.current.value;
+  let userPassword=password.current.value;
+  // let userName=name.current.value;
+  //  console.log(email,password,name);
+   const message=checkValidData(userEmail,userPassword);
+    setErrorMessage(message);
+
+  
+
+   if(message) return;
+
+   //sign in sign up logic 
+
+   //for signup form
+   if(!isSignIn){
+    createUserWithEmailAndPassword(auth, userEmail,userPassword)
+    .then((userCredential) => {
+      // Signed up 
+      const user = userCredential.user;
+      console.log(user);
+      updateProfile(user, {
+        displayName: name.current.value, photoURL: USER_AVTAR
+      }).then(() => {
+        // Profile updated!
+        const {uid,email,displayName,photoURL}=auth.currentUser;
+        dispatch(
+          addUser({
+            uid:uid,
+            email:email,
+            displayName:displayName,
+            photoURL:photoURL,
+          })
+        )
+        navigate("/browse")
+
+        // ...
+      }).catch((error) => {
+        setErrorMessage(error.message)
+      })
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      setErrorMessage(errorCode+" "+errorMessage)
+      // ..
+    });
+  
+   }
+   //sign in logic
+   else{
+    signInWithEmailAndPassword(auth, userEmail, userPassword)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      // console.log(user);
+      navigate("/browse")
+
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      setErrorMessage(errorCode+" "+errorMessage)
+    });
+   }
 
 
-    const[isSignIn,setIsSignIn]=useState(false);
-    const toggleSignInForm=()=>{
-        setIsSignIn(!isSignIn);
-    }
+ }
+
+
   return (
     <>
-        <Header/>
-    <div className='flex justify-center'>
-        <div className='absolute'>
-
-        <img  src="https://assets.nflxext.com/ffe/siteui/vlv3/9134db96-10d6-4a64-a619-a21da22f8999/a449fabb-05e4-4c8a-b062-b0bec7d03085/IN-en-20240115-trifectadaily-perspective_alpha_website_small.jpg" alt="" />
+      <Header />
+      <div className="flex justify-center  ">
+        <div className="absolute ">
+          <img
+            src={BG_URL}
+            alt=""
+          />
         </div>
-        {
-            isSignIn? 
-            (
-                <form action=""  className='w-1/3 absolute  my-16 flex flex-col  p-8 bg-black opacity-90 gap-6 rounded-sm text-white'>
-                <h1 className='text-white text-3xl font-semibold text-left'>Sign In</h1>
-                <input type="text" placeholder='Email Address' className='p-2  bg-[#4C4B4B] w-full rounded-sm' />
-                <input type="password" placeholder='Password' className='p-2 bg-[#4C4B4B] w-full rounded-sm' />
-                <button className='p-2 mt-4 bg-red-600 w-full rounded-sm'>Sign In</button>
-                <p className='text-left cursor-pointer' onClick={toggleSignInForm}>New to Netflix? Sign Up Now</p>
-            </form>
-            ) :
-            <form action=""  className='w-1/3 absolute  my-16 flex flex-col  p-8 bg-black opacity-90 gap-6 rounded-sm text-white'>
-            <h1 className='text-white text-3xl font-semibold text-left'>Sign Up</h1>
-            <input type="text" placeholder='Name' className='p-2  bg-[#4C4B4B] w-full rounded-sm' />
-            <input type="text" placeholder='Email Address' className='p-2  bg-[#4C4B4B] w-full rounded-sm' />
-            <input type="password" placeholder='Password' className='p-2 bg-[#4C4B4B] w-full rounded-sm' />
-            <button className='p-2 mt-4 bg-red-600 w-full rounded-sm'>Sign Up</button>
-            <p className='text-left cursor-pointer' onClick={toggleSignInForm}>Already Registered? Sign In here </p>
+
+        <form
+          action=""
+          className="w-1/3 z-20 absolute  my-16 flex flex-col  p-8 bg-black opacity-90 gap-6 rounded-sm text-white"
+          onSubmit={(e)=>e.preventDefault()}
+        >
+          <h1 className="text-white text-3xl font-semibold text-left">
+            {isSignIn ? "Sign In" : "Sign Up"}
+          </h1>
+          {!isSignIn && (
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="p-2 bg-[#4C4B4B] w-full rounded-sm"
+              ref={name}
+            />
+          )}
+          <input
+            type="text"
+            placeholder="Email Address"
+            className="p-2  bg-[#4C4B4B] w-full rounded-sm"
+            ref={email}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="p-2 bg-[#4C4B4B] w-full rounded-sm"
+            ref={password}
+          />
+          <p className="text-red-600">{errorMessage}</p>
+          <button className="p-2 mt-4 bg-red-600 w-full rounded-sm" onClick={handleButtonClick}>
+            {isSignIn ? "Sign In" : "Sign Up"}
+          </button>
+          <p className="text-left cursor-pointer" onClick={toggleSignInForm}>
+            {isSignIn
+              ? "New to Netflix? Sign Up Now"
+              : "Already Registered? Sign In here"}
+          </p>
         </form>
-        }
-        
-    </div>
+      </div>
     </>
-
-
-  )
+  );
 }
 
-export default Login
+export default Login;
