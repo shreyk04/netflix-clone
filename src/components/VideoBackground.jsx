@@ -13,7 +13,6 @@ function VideoBackground({movieId}) {
 
  
   return (
-<<<<<<< HEAD
     <div className="w-full">
       <iframe
         className="w-full aspect-video"
@@ -24,16 +23,6 @@ function VideoBackground({movieId}) {
         }
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-=======
-    <div className="w-screen">
-      <iframe
-        className="w-screen aspect-video"
-        src={`https://www.youtube.com/embed/${trailerVideo?.key}?autoplay=true&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0`}
-       
-        title="Badland Hunters | Official Trailer | Netflix"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        
->>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
       ></iframe>
     </div>
   );

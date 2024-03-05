@@ -80,11 +80,7 @@ function Login() {
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-<<<<<<< HEAD
       // console.log(user);
-=======
-      console.log(user);
->>>>>>> eab811a176b5c517c24fb9d0d8f5c6146e6cc3cd
       navigate("/browse")
 
       // ...
